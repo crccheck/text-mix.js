@@ -3,6 +3,14 @@
 <head>
   <meta charset=utf-8 />
   <title>Text Crossfade Demo</title>
+  <style>
+    input {
+      width: 20em;
+    }
+    input[type=range] {
+      margin: 0;
+    }
+  </style>
 </head>
 <body>
   <input type="text" id="thing1" placeholder="Put text in me." value="elvis was here">
@@ -14,11 +22,31 @@
 
   <script src="text-mix.js"></script>
   <script>
-    var text1 = document.getElementById('thing1').value,
-        text2 = document.getElementById('thing2').value;
-    document.getElementById('fader').addEventListener('change', function () {
-      document.getElementById('output').value = textMix(text1, text2, this.value);
-    }, false);
+    var thing1 = document.getElementById('thing1'),
+        thing2 = document.getElementById('thing2'),
+        fader = document.getElementById('fader'),
+        output = document.getElementById('output'),
+        step = +fader.step,
+        timer,
+        ramp = function () {
+          var val = +fader.value;
+          val += step;
+          if ((val > +fader.max) || (val < +fader.min)) {
+            step = -step;
+            val += step;
+          }
+          fader.value = val;
+          output.value = textMix(thing1.value, thing2.value, val);
+          timer = setTimeout(ramp, Math.abs(2 / step));
+        },
+        cb = function () {
+          if (timer) {
+            clearTimeout(timer);
+          }
+          output.value = textMix(thing1.value, thing2.value, this.value);
+        };
+    fader.addEventListener('change', cb, false);
+    ramp();
   </script>
 </body>
 </html>
