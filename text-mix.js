@@ -35,13 +35,13 @@
   var textMix = function(text1, text2, amount) {
     var words1 = text1.split(' '),
         words2 = text2.split(' '),
+        n_max = Math.max(words1.length, words2.length),
         out = [];
-    // FIXME handle different words count
-    for (var i = 0; i < words1.length; i++) {
+    for (var i = 0; i < n_max; i++) {
       if (utils.isNumeric(words1[i]) && utils.isNumeric(words2[i])) {
         out.push(numberMix(parseFloat(words1[i]), parseFloat(words2[i]), amount));
       } else {
-        out.push(stringMix(words1[i], words2[i], amount));
+        out.push(stringMix(words1[i] || '', words2[i] || '', amount));
       }
     }
     return out.join(' ');
