@@ -1,0 +1,24 @@
+{
+  "name": "levenshtein",
+  "version": "1.0.2",
+  "main": "lib/levenshtein.js",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "components",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "homepage": "https://github.com/gf3/Levenshtein",
+  "_release": "1.0.2",
+  "_resolution": {
+    "type": "version",
+    "tag": "v1.0.2",
+    "commit": "8507da330f68aa24c99740d9d6a25a6246fdaee3"
+  },
+  "_source": "git://github.com/gf3/Levenshtein.git",
+  "_target": "~1.0.2",
+  "_originalSource": "levenshtein",
+  "_direct": true
+}
