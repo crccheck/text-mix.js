@@ -10,12 +10,16 @@
 
   var pick = function(text1, text2, idx, amount) {
     // assert idx < Math.max(text1.length, text2.length)
+    var n_max = Math.max(text1.length, text2.length);
     if (idx >= text1.length) {
       return text2[idx];
     } else if (idx >= text2.length) {
       return text1[idx];
     }
-    return (Math.random() < amount) ? text2[idx]: text1[idx];
+    // left to right:
+    return (idx < amount * n_max) ? text2[idx]: text1[idx];
+    // random method:
+    // return (Math.random() < amount) ? text2[idx]: text1[idx];
   };
 
   var stringMix = function(text1, text2, amount) {
