@@ -1,4 +1,4 @@
-;(function (exports) {
+;(function (exports, Levenshtein) {
   'use strict';
 
   var utils = {
@@ -8,7 +8,79 @@
     }
   };
 
+  var matrixMemory = {};
+
+  window.zz = matrixMemory
+  var NOOP = null,
+      SUB = 0,
+      INSERT = -1,
+      DELETION = 1;
+
+  var next = function (matrix, startX, startY) {
+    // http://stackoverflow.com/questions/5849139/levenshtein-distance-inferring-the-edit-operations-from-the-matrix
+    // assert startY > matrix.length
+    // assert startX > matrix[0].length
+    var val = matrix[startY][startX],
+        up = matrix[startY - 1][startX],
+        left = matrix[startY][startX - 1],
+        diag = matrix[startY - 1][startX - 1],
+        min = Math.min(up, left, diag),
+        nextX = startX, nextY = startY, operation;
+    console.log('val:', val, 'up:', up, 'diag:', diag, 'left:', left, 'min:', min);
+    if (diag === 0 || diag <= min) {
+      nextX = startX - 1;
+      nextY = startY - 1;
+      if (diag < val) {
+        operation = SUB;
+      } else if (diag === val) {
+        operation = NOOP;
+      }
+    } else if (left === 0 || left <= min) {
+      operation = INSERT;
+      nextX = startX - 1;
+    } else {
+      operation = DELETION;
+      nextY = startY -1;
+    }
+    return [val, operation, nextX, nextY];
+  };
+  window.n = next
+
+  var traverse = function(text1, text2) {
+    var matrix = (new Levenshtein(text1, text2)).getMatrix(),
+        startY = matrix.length,
+        startX = matrix[0].length,
+        out,
+        ret = text2.split('');
+
+    while (startX >= 0 && startY >= 0) {
+      out = next(matrix, startX, startY);
+      switch (out[1]) {
+        case NOOP:
+        break;
+        case SUB:
+          ret[startY] = text1[startX];
+        break;
+        case INSERT:
+          ret.splice(startY, 0, text1[startX]);
+        break;
+        case DELETION:
+          ret.splice(startX, 1);
+        break;
+      }
+      startX = out[2];
+      startY = out[3];
+      console.log(ret.join(''))
+    }
+    return ret.join('');
+  };
+  window.t = traverse
+
   var pick = function(text1, text2, idx, amount) {
+    var mmKey = text1 + ' ' + text2;
+    if (!matrixMemory[mmKey]) {
+      matrixMemory[mmKey] = (new Levenshtein(text1, text2)).getMatrix();
+    }
     // assert idx < Math.max(text1.length, text2.length)
     var n_max = Math.max(text1.length, text2.length);
     if (idx >= text1.length) {
@@ -53,4 +125,4 @@
 
   exports.textMix = textMix;
 
-})(window);
+})(this, window.Levenshtein);
