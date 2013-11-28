@@ -1,0 +1,27 @@
+{
+  "name": "text-mix",
+  "version": "0.0.0",
+  "description": "Crossfade text blobs",
+  "main": "text-mix.js",
+  "dependencies": {
+    "levenshtein": "~1.0.2"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/crccheck/text-mix.git"
+  },
+  "keywords": [
+    "text",
+    "inline",
+    "fade",
+    "crossfade"
+  ],
+  "author": "crccheck",
+  "license": "BSD",
+  "readmeFilename": "README.md",
+  "gitHead": "cf911b8e98e487d4b31cd14d091b1b546afef535"
+}
