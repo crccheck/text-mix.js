@@ -1,4 +1,20 @@
-;(function (exports, Levenshtein) {
+// Uses Node, AMD or browser globals to create a module.
+//
+// https://github.com/umdjs/umd/blob/master/returnExports.js
+(function (root, factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['levenshtein'], factory);
+  } else if (typeof exports === 'object') {
+    // Node. Does not work with strict CommonJS, but
+    // only CommonJS-like enviroments that support module.exports,
+    // like Node.
+    module.exports = factory(require('levenshtein'));
+  } else {
+    // Browser globals (root is window)
+    root.textMix = factory(root.Levenshtein);
+  }
+}(this, function (Levenshtein) {
   'use strict';
 
   var utils = {
@@ -10,7 +26,6 @@
 
   var matrixMemory = {};
 
-  window.zz = matrixMemory
   var NOOP = null,
       SUB = 0,
       INSERT = -1,
@@ -44,7 +59,6 @@
     }
     return [val, operation, nextX, nextY];
   };
-  window.n = next
 
   var traverse = function(text1, text2) {
     var matrix = (new Levenshtein(text1, text2)).getMatrix(),
@@ -74,7 +88,6 @@
     }
     return ret.join('');
   };
-  window.t = traverse
 
   var pick = function(text1, text2, idx, amount) {
     var mmKey = text1 + ' ' + text2;
@@ -123,6 +136,5 @@
     return out.join(' ');
   };
 
-  exports.textMix = textMix;
-
-})(this, window.Levenshtein);
+  return textMix;
+}));
