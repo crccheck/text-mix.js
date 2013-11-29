@@ -162,7 +162,8 @@
       } else if (!w1 || !w1.length || !w2 || !w2.length) {
         out.push(stringMix(w1 || '', w2 || '', amount));
       } else {
-        out.push(traverse(w2, w1, Math.round(amount*20)));
+        var d = (new Levenshtein(w1, w2)).distance;
+        out.push(traverse(w2, w1, Math.round(amount * d)));
       }
     }
     return out.join(' ');
