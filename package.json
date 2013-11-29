@@ -1,7 +1,7 @@
 {
   "name": "text-mix",
   "version": "0.0.0",
-  "description": "Crossfade text blobs",
+  "description": "Smooth transitions for chunks of text.",
   "main": "text-mix.js",
   "dependencies": {
     "levenshtein": "~1.0.2"
@@ -13,7 +13,7 @@
     "grunt-simple-mocha": "~0.4.0"
   },
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "grunt test"
   },
   "repository": {
     "type": "git",
@@ -26,7 +26,7 @@
     "crossfade"
   ],
   "author": "crccheck",
-  "license": "BSD",
+  "license": "Apache2",
   "readmeFilename": "README.md",
   "gitHead": "cf911b8e98e487d4b31cd14d091b1b546afef535"
 }
