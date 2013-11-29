@@ -19,9 +19,14 @@ module.exports = (grunt) ->
         files:
           'dist/<%= pkg.name %>.min.js': ['<%= concat.basic.dest %>']
           'dist/jquery-<%= pkg.name %>.min.js': ['<%= concat.jqueryPlugin.dest %>']
+    simplemocha:
+      test:
+        src: ['*.tests.js']
 
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
+  grunt.loadNpmTasks 'grunt-simple-mocha'
 
-  grunt.registerTask 'default', ['jshint', 'concat', 'uglify']
+  grunt.registerTask 'default', ['jshint', 'simplemocha', 'concat', 'uglify']
+  grunt.registerTask 'test', ['jshint', 'simplemocha']
