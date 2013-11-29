@@ -85,14 +85,15 @@
     return [min, operation, nextX, nextY];
   };
 
+  // Traverse a path through the Levenshtein matrix
   var traverse = function(text1, text2, iterations) {
     var lev = cachedLevenshtein(text1, text2);
     if (lev.distance === 0) {
       // text1 == text2
       return text1;
     }
-    var matrix = lev.getMatrix();
-    var startY = matrix.length - 1,
+    var matrix = lev.getMatrix(),
+        startY = matrix.length - 1,
         startX = matrix[0].length - 1,
         out,
         ret = text2.split('');
@@ -125,6 +126,7 @@
     return ret.join('');
   };
 
+  // helper for `stringMix`
   var pick = function(text1, text2, idx, amount) {
     // assert idx < Math.max(text1.length, text2.length)
     var n_max = Math.max(text1.length, text2.length);
@@ -139,6 +141,7 @@
     // return (Math.random() < amount) ? text2[idx]: text1[idx];
   };
 
+  // Basic tween between two strings starting from the left
   var stringMix = function(text1, text2, amount) {
     var new_length = text1.length + Math.floor((text2.length - text1.length) * amount),
         out = '';
@@ -148,6 +151,7 @@
     return out;
   };
 
+  // Tween between two numbers
   var numberMix = function(num1, num2, amount) {
     // FIXME sig digs
     return Math.round(num1 + (num2 - num1) * amount);
