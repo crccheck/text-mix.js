@@ -61,8 +61,13 @@
   };
 
   var traverse = function(text1, text2, iterations) {
-    var matrix = (new Levenshtein(text1, text2)).getMatrix(),
-        startY = matrix.length - 1,
+    var lev = new Levenshtein(text1, text2);
+    if (lev.distance === 0) {
+      // text1 == text2
+      return text1;
+    }
+    var matrix = lev.getMatrix();
+    var startY = matrix.length - 1,
         startX = matrix[0].length - 1,
         out,
         ret = text2.split('');
