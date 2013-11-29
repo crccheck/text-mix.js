@@ -23,14 +23,6 @@ describe('TextMix', function () {
     assert.equal(textMix.traverse('elvis', 'washington', 0), 'washington');
     assert.equal(textMix.traverse('washington', 'elvis', 0), 'elvis');
     assert.equal(textMix.traverse('washington', 'elvis', 10), 'washington');
-    // TODO FIXME
-    assert.equal(textMix.traverse('elvis', 'washington', 21), 'elvis');
-    // assert.equal(textMix.traverse('elvis','washington', 2), 'washingtos');
-    // assert.equal(textMix.traverse('elvis','washington', 3), 'sitten');
-    // assert.equal(textMix.traverse('elvis','washington', 4), 'sitten');
-    // assert.equal(textMix.traverse('elvis','washington', 5), 'sitten');
-    // assert.equal(textMix.traverse('elvis','washington', 6), 'sitten');
-    // assert.equal(textMix.traverse('elvis','washington', 7), 'kitten');
-    // assert.equal(textMix.traverse('elvis','washington', 8), 'kitten');
+    assert.equal(textMix.traverse('elvis', 'washington', 10), 'elvis');
   });
 });

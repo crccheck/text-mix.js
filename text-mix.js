@@ -24,6 +24,11 @@
     }
   };
 
+  var debug = function() {
+    if (false)
+    console.log.apply(undefined, arguments);
+  };
+
   var matrixMemory = {};
 
   var NOOP = 'noop',
@@ -58,6 +63,7 @@
       if (diag < val) {
         operation = SUB;
       } else if (diag === val) {
+        // NOOP sometimes should be SUB
         operation = NOOP;
       }
     } else if (left === 0 || left <= min) {
@@ -67,7 +73,7 @@
       operation = DELETION;
       nextY = startY -1;
     }
-    return [val, operation, nextX, nextY];
+    return [min, operation, nextX, nextY];
   };
 
   var traverse = function(text1, text2, iterations) {
@@ -82,17 +88,17 @@
         out,
         ret = text2.split('');
 
-    // console.log('traverse', text1, text2, iterations)
-    // console.log(lev.inspect())
+    debug('traverse', text1, text2, iterations);
+    debug(lev.inspect());
     while (iterations-- && (startX || startY)) {
       out = next(matrix, startX, startY);
-      // console.log('.next', 'iterations:', iterations, 'startX:', startX, 'startY:', startY)
-      // console.log('..out:', out)
+      debug('.next', 'iterations:', iterations, 'startX:', startX, 'startY:', startY);
+      debug('..out:', out);
       startX = out[2];
       startY = out[3];
       switch (out[1]) {
         case NOOP:
-        break;
+          // NOOP sometimes should be SUB
         case SUB:
           ret[startY] = text1[startX];
         break;
@@ -103,7 +109,7 @@
           ret.splice(startX, 1);
         break;
       }
-      // console.log('..ret:', ret.join(''))
+      debug('..ret:', ret.join(''));
     }
     return ret.join('');
   };
