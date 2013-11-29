@@ -31,6 +31,7 @@
       INSERT = -1,
       DELETION = 1;
 
+  // An iteration step through a Levenshtein matrix (reverse backwards)
   var next = function (matrix, startX, startY) {
     // http://stackoverflow.com/questions/5849139/levenshtein-distance-inferring-the-edit-operations-from-the-matrix
     // assert startY > matrix.length
@@ -129,12 +130,17 @@
     var words1 = text1.split(' '),
         words2 = text2.split(' '),
         n_max = Math.max(words1.length, words2.length),
-        out = [];
+        out = [],
+        w1, w2;
     for (var i = 0; i < n_max; i++) {
-      if (utils.isNumeric(words1[i]) && utils.isNumeric(words2[i])) {
-        out.push(numberMix(parseFloat(words1[i]), parseFloat(words2[i]), amount));
+      w1 = words1[i];
+      w2 = words2[i];
+      if (utils.isNumeric(w1) && utils.isNumeric(w2)) {
+        out.push(numberMix(parseFloat(w1), parseFloat(w2), amount));
+      } else if (!w1 || !w1.length || !w2 || !w2.length) {
+        out.push(stringMix(w1 || '', w2 || '', amount));
       } else {
-        out.push(stringMix(words1[i] || '', words2[i] || '', amount));
+        out.push(traverse(w1, w2, Math.round(amount*20)));
       }
     }
     return out.join(' ');
