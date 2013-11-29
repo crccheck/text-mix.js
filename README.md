@@ -2,7 +2,7 @@
 
 Smooth transitions for chunks of text.
 
-![](http://crccheck.github.io/text-mix.js/images/textmix.jpg)
+![](http://crccheck.github.io/text-mix.js/images/text-mix.jpg)
 
 ## Intro
 
