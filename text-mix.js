@@ -26,10 +26,10 @@
 
   var matrixMemory = {};
 
-  var NOOP = null,
-      SUB = 0,
-      INSERT = -1,
-      DELETION = 1;
+  var NOOP = 'noop',
+      SUB = 'sub',
+      INSERT = 'ins',
+      DELETION = 'del';
 
   // An iteration step through a Levenshtein matrix (reverse backwards)
   var next = function (matrix, startX, startY) {
@@ -37,11 +37,20 @@
     // assert startY > matrix.length
     // assert startX > matrix[0].length
     var val = matrix[startY][startX],
-        up = matrix[startY - 1][startX],
-        left = matrix[startY][startX - 1],
-        diag = matrix[startY - 1][startX - 1],
-        min = Math.min(up, left, diag),
-        nextX = startX, nextY = startY, operation;
+        nextX = startX, nextY = startY, operation,
+        diag = Infinity,
+        up = Infinity,
+        left = Infinity;
+    if (startY > 0) {
+      up = matrix[startY - 1][startX];
+    }
+    if (startX > 0) {
+      left = matrix[startY][startX - 1];
+    }
+    if (startX > 0 && startY > 0) {
+      diag = matrix[startY - 1][startX - 1];
+      }
+    var min = Math.min(up, left, diag);
     // console.log('val:', val, 'up:', up, 'diag:', diag, 'left:', left, 'min:', min);
     if (diag === 0 || diag <= min) {
       nextX = startX - 1;
@@ -73,8 +82,12 @@
         out,
         ret = text2.split('');
 
-    while (iterations-- && startX > 0 && startY > 0) {
+    // console.log('traverse', text1, text2, iterations)
+    // console.log(lev.inspect())
+    while (iterations-- && (startX || startY)) {
       out = next(matrix, startX, startY);
+      // console.log('.next', 'iterations:', iterations, 'startX:', startX, 'startY:', startY)
+      // console.log('..out:', out)
       startX = out[2];
       startY = out[3];
       switch (out[1]) {
@@ -90,6 +103,7 @@
           ret.splice(startX, 1);
         break;
       }
+      // console.log('..ret:', ret.join(''))
     }
     return ret.join('');
   };
@@ -140,7 +154,7 @@
       } else if (!w1 || !w1.length || !w2 || !w2.length) {
         out.push(stringMix(w1 || '', w2 || '', amount));
       } else {
-        out.push(traverse(w1, w2, Math.round(amount*20)));
+        out.push(traverse(w2, w1, Math.round(amount*20)));
       }
     }
     return out.join(' ');
