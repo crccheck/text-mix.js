@@ -98,7 +98,9 @@
       startY = out[3];
       switch (out[1]) {
         case NOOP:
+          ++iterations;
           // NOOP sometimes should be SUB
+          /* falls through */
         case SUB:
           ret[startY] = text1[startX];
         break;
