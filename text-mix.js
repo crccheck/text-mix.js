@@ -26,7 +26,7 @@
 
   var debug = function() {
     if (false)
-    console.log.apply(undefined, arguments);
+    console.log.apply(console, arguments);
   };
 
 
