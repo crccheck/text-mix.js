@@ -41,7 +41,7 @@
         diag = matrix[startY - 1][startX - 1],
         min = Math.min(up, left, diag),
         nextX = startX, nextY = startY, operation;
-    console.log('val:', val, 'up:', up, 'diag:', diag, 'left:', left, 'min:', min);
+    // console.log('val:', val, 'up:', up, 'diag:', diag, 'left:', left, 'min:', min);
     if (diag === 0 || diag <= min) {
       nextX = startX - 1;
       nextY = startY - 1;
@@ -60,15 +60,17 @@
     return [val, operation, nextX, nextY];
   };
 
-  var traverse = function(text1, text2) {
+  var traverse = function(text1, text2, iterations) {
     var matrix = (new Levenshtein(text1, text2)).getMatrix(),
-        startY = matrix.length,
-        startX = matrix[0].length,
+        startY = matrix.length - 1,
+        startX = matrix[0].length - 1,
         out,
         ret = text2.split('');
 
-    while (startX >= 0 && startY >= 0) {
+    while (iterations-- && startX > 0 && startY > 0) {
       out = next(matrix, startX, startY);
+      startX = out[2];
+      startY = out[3];
       switch (out[1]) {
         case NOOP:
         break;
@@ -82,9 +84,6 @@
           ret.splice(startX, 1);
         break;
       }
-      startX = out[2];
-      startY = out[3];
-      console.log(ret.join(''))
     }
     return ret.join('');
   };
@@ -136,5 +135,8 @@
     return out.join(' ');
   };
 
-  return textMix;
+  return {
+    traverse: traverse,
+    textMix: textMix
+  };
 }));

@@ -35,7 +35,7 @@
             val += step;
           }
           fader.value = val;
-          output.value = textMix(thing1.value, thing2.value, val);
+          output.value = textMix.textMix(thing1.value, thing2.value, val);
           timer = setTimeout(ramp, Math.abs(2 / step));
         },
         cb = function (e) {
@@ -43,7 +43,7 @@
             clearTimeout(timer);
           }
           if (fader.value != lastVal) {
-            output.value = textMix(thing1.value, thing2.value, this.value);
+            output.value = textMix.textMix(thing1.value, thing2.value, this.value);
             lastVal = fader.value;
           }
         };
