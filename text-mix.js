@@ -29,12 +29,21 @@
     console.log.apply(undefined, arguments);
   };
 
-  var matrixMemory = {};
 
   var NOOP = 'noop',
       SUB = 'sub',
       INSERT = 'ins',
       DELETION = 'del';
+
+  // cache creation of Levenshtein matrix
+  var matrixMemory = {},
+      cachedLevenshtein = function (text1, text2) {
+        var mmKey = text1 + ' ' + text2;
+        if (!matrixMemory[mmKey]) {
+          matrixMemory[mmKey] = (new Levenshtein(text1, text2));
+        }
+        return matrixMemory[mmKey];
+      };
 
   // An iteration step through a Levenshtein matrix (reverse backwards)
   var next = function (matrix, startX, startY) {
@@ -77,7 +86,7 @@
   };
 
   var traverse = function(text1, text2, iterations) {
-    var lev = new Levenshtein(text1, text2);
+    var lev = cachedLevenshtein(text1, text2);
     if (lev.distance === 0) {
       // text1 == text2
       return text1;
@@ -117,10 +126,6 @@
   };
 
   var pick = function(text1, text2, idx, amount) {
-    var mmKey = text1 + ' ' + text2;
-    if (!matrixMemory[mmKey]) {
-      matrixMemory[mmKey] = (new Levenshtein(text1, text2)).getMatrix();
-    }
     // assert idx < Math.max(text1.length, text2.length)
     var n_max = Math.max(text1.length, text2.length);
     if (idx >= text1.length) {
@@ -162,7 +167,7 @@
       } else if (!w1 || !w1.length || !w2 || !w2.length) {
         out.push(stringMix(w1 || '', w2 || '', amount));
       } else {
-        var d = (new Levenshtein(w1, w2)).distance;
+        var d = (cachedLevenshtein(w1, w2)).distance;
         out.push(traverse(w2, w1, Math.round(amount * d)));
       }
     }
