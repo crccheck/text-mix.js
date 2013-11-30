@@ -180,6 +180,7 @@
 
   return {
     traverse: traverse,
+    numberMix: numberMix,
     textMix: textMix
   };
 }));
