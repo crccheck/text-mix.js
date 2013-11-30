@@ -2,6 +2,39 @@ var textMix = require('./text-mix'),
     assert = require('assert');
 
 
+describe('stringMix', function () {
+  it('handles trivial cases', function () {
+    assert.equal(textMix.stringMix('', '', 0), '');
+    assert.equal(textMix.stringMix('', '', 1), '');
+    assert.equal(textMix.stringMix('a', 'z', 0), 'a');
+    assert.equal(textMix.stringMix('a', 'z', 1), 'z');
+  });
+
+  it('tweens', function () {
+    assert.equal(textMix.stringMix('wasd', 'qwerty', 0), 'wasd');
+    assert.equal(textMix.stringMix('wasd', 'qwerty', 0.5), 'qwedt');
+    assert.equal(textMix.stringMix('wasd', 'qwerty', 0.8), 'qwert');
+    assert.equal(textMix.stringMix('wasd', 'qwerty', 1), 'qwerty');
+  });
+
+  it('tweens null strings', function () {
+    assert.equal(textMix.stringMix('0123456789', '', 0.0), '0123456789');
+    assert.equal(textMix.stringMix('0123456789', '', 0.1), '012345678');
+    assert.equal(textMix.stringMix('0123456789', '', 0.2), '01234567');
+    assert.equal(textMix.stringMix('0123456789', '', 0.5), '01234');
+    assert.equal(textMix.stringMix('0123456789', '', 0.9), '0');
+    assert.equal(textMix.stringMix('0123456789', '', 1.0), '');
+
+    assert.equal(textMix.stringMix('', '0123456789', 0.0), '');
+    assert.equal(textMix.stringMix('', '0123456789', 0.1), '0');
+    assert.equal(textMix.stringMix('', '0123456789', 0.2), '01');
+    assert.equal(textMix.stringMix('', '0123456789', 0.5), '01234');
+    assert.equal(textMix.stringMix('', '0123456789', 0.9), '012345678');
+    assert.equal(textMix.stringMix('', '0123456789', 1.0), '0123456789');
+  });
+});
+
+
 describe('numberMix', function () {
   it('handles trivial cases', function () {
     assert.equal(textMix.numberMix(0, 0, 0), 0);

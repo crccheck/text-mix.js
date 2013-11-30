@@ -180,6 +180,7 @@
 
   return {
     traverse: traverse,
+    stringMix: stringMix,
     numberMix: numberMix,
     textMix: textMix
   };
