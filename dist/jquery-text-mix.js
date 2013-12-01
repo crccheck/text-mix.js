@@ -1,4 +1,4 @@
-/* text-mix - v0.1.0 - 2013-11-29 */
+/* text-mix - v0.2.0 - 2013-12-01 */
 // Uses Node, AMD or browser globals to create a module.
 //
 // https://github.com/umdjs/umd/blob/master/returnExports.js
@@ -181,11 +181,27 @@
 
   return {
     traverse: traverse,
+    stringMix: stringMix,
+    numberMix: numberMix,
     textMix: textMix
   };
 }));
 
-;(function ($, textMix) {
+// Uses CommonJS, AMD or browser globals to create a jQuery plugin.
+//
+// https://github.com/umdjs/umd/blob/master/jqueryPluginCommonjs.js
+(function (factory) {
+  if (typeof define === 'function' && define.amd) {
+    // AMD. Register as an anonymous module.
+    define(['jquery', 'text-mix'], factory);
+  } else if (typeof exports === 'object') {
+    // Node/CommonJS
+    factory(require('jquery'), require('text-mix'));
+  } else {
+    // Browser globals
+    factory(jQuery, textMix);
+  }
+}(function ($, textMix) {
 
   $.fn.textMix = function (newText, duration, easing, complete) {
     var self = this,
@@ -209,4 +225,4 @@
     $({foo: 0}).animate({foo: 1}, options);
   };
 
-})(window.jQuery, window.textMix);
+}));

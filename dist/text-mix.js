@@ -1,4 +1,4 @@
-/* text-mix - v0.1.0 - 2013-11-29 */
+/* text-mix - v0.2.0 - 2013-12-01 */
 // Uses Node, AMD or browser globals to create a module.
 //
 // https://github.com/umdjs/umd/blob/master/returnExports.js
@@ -181,6 +181,8 @@
 
   return {
     traverse: traverse,
+    stringMix: stringMix,
+    numberMix: numberMix,
     textMix: textMix
   };
 }));
