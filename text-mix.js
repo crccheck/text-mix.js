@@ -157,9 +157,16 @@
     return Math.round(num1 + (num2 - num1) * amount);
   };
 
+  // Splits a sentence into words
+  // Demo: http://youtu.be/M7FIvfx5J10
+  var get_words = function(text) {
+    return text.split(' ');
+    // return [text];
+  };
+
   var textMix = function(text1, text2, amount) {
-    var words1 = text1.split(' '),
-        words2 = text2.split(' '),
+    var words1 = get_words(text1),
+        words2 = get_words(text2),
         n_max = Math.max(words1.length, words2.length),
         out = [],
         w1, w2;
