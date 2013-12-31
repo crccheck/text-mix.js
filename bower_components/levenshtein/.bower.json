@@ -10,15 +10,12 @@
     "test",
     "tests"
   ],
-  "homepage": "https://github.com/gf3/Levenshtein",
-  "_release": "1.0.2",
-  "_resolution": {
-    "type": "version",
-    "tag": "v1.0.2",
-    "commit": "8507da330f68aa24c99740d9d6a25a6246fdaee3"
+  "_cacheHeaders": {
+    "Content-Length": "2644",
+    "Content-Type": "application/x-gzip",
+    "Content-Disposition": "attachment; filename=gf3-Levenshtein-v1.0.2-4-g12efe98.tar.gz"
   },
-  "_source": "git://github.com/gf3/Levenshtein.git",
-  "_target": "~1.0.2",
-  "_originalSource": "levenshtein",
-  "_direct": true
+  "_source": "https://github.com/gf3/Levenshtein/tarball/master",
+  "_target": "*",
+  "_originalSource": "https://github.com/gf3/Levenshtein/tarball/master"
 }
