@@ -79,3 +79,14 @@ textMix.textMix("I ate 12 cookies", "and  4 cupcakes", 0.2);
 ```
 
  [matrix]: http://en.wikipedia.org/wiki/Levenshtein_distance#Iterative_with_full_matrix
+
+
+## For developers
+
+To install what's needed for development and to run the test suite:
+
+    npm install
+
+To install what's needed to run the demo locally, run:
+
+    bower install
