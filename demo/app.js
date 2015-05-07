@@ -7,16 +7,19 @@ var thing1 = document.getElementById('thing1'),
     timer, lastVal,
     ramp = function () {
       var val = +fader.value;
+      var switchedDirection = false;
       val += step;
       if ((val > +fader.max) || (val < +fader.min)) {
         step = -step;
         val += step;
+        switchedDirection = true;
       }
       fader.value = val;
       output.value = textMix.textMix(thing1.value, thing2.value, val);
-      timer = setTimeout(ramp, Math.abs(2 / step));
+      var timeout = switchedDirection ? 700 : Math.abs(2 / step);
+      timer = setTimeout(ramp, timeout);
     },
-    _faderCB = function (e) {
+    _faderCB = function () {
       if (timer) {
         clearTimeout(timer);
       }
