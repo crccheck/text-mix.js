@@ -5,10 +5,10 @@ module.exports = (grunt) ->
       options:
         banner: '/* <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */\n'
       basic:
-        src: ['text-mix.js']
+        src: ['src/text-mix.js']
         dest: 'dist/<%= pkg.name %>.js'
       jqueryPlugin:
-        src: ['text-mix.js', 'text-mix.jquery.js']
+        src: ['src/text-mix.js', 'src/text-mix.jquery.js']
         dest: 'dist/jquery-<%= pkg.name %>.js'
       # copy the requirement into the demo directory.
       demo:
@@ -17,7 +17,7 @@ module.exports = (grunt) ->
         src: ['node_modules/levenshtein/lib/levenshtein.js']
         dest: 'demo/levenshtein.js'
     jshint:
-      files: ['*.js']
+      files: ['src/*.js', 'demo/app.js']
     uglify:
       options:
         banner: '/* <%= pkg.name %> - v<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd") %> */\n'
@@ -27,7 +27,7 @@ module.exports = (grunt) ->
           'dist/jquery-<%= pkg.name %>.min.js': ['<%= concat.jqueryPlugin.dest %>']
     simplemocha:
       test:
-        src: ['*.tests.js']
+        src: ['tests/*.tests.js']
     watch:
       demo:
         files: ['index.html', 'demo/**/*']
@@ -36,7 +36,6 @@ module.exports = (grunt) ->
     connect:
       server:
         options:
-          base: ['.']
           port: 8000
           livereload: true
 

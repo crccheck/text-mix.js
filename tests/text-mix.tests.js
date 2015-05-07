@@ -1,4 +1,4 @@
-var textMix = require('./text-mix'),
+var textMix = require('../src/text-mix'),
     assert = require('assert');
 
 
