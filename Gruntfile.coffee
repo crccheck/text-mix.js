@@ -10,6 +10,12 @@ module.exports = (grunt) ->
       jqueryPlugin:
         src: ['text-mix.js', 'text-mix.jquery.js']
         dest: 'dist/jquery-<%= pkg.name %>.js'
+      # copy the requirement into the demo directory.
+      demo:
+        options:
+          banner: ''
+        src: ['node_modules/levenshtein/lib/levenshtein.js']
+        dest: 'demo/levenshtein.js'
     jshint:
       files: ['*.js']
     uglify:
@@ -22,11 +28,27 @@ module.exports = (grunt) ->
     simplemocha:
       test:
         src: ['*.tests.js']
+    watch:
+      demo:
+        files: ['index.html', 'demo/**/*']
+        options:
+          livereload: true
+    connect:
+      server:
+        options:
+          base: ['.']
+          port: 8000
+          livereload: true
 
   grunt.loadNpmTasks 'grunt-contrib-concat'
   grunt.loadNpmTasks 'grunt-contrib-jshint'
   grunt.loadNpmTasks 'grunt-contrib-uglify'
   grunt.loadNpmTasks 'grunt-simple-mocha'
+  grunt.loadNpmTasks 'grunt-contrib-watch'
+  grunt.loadNpmTasks 'grunt-contrib-connect'
 
   grunt.registerTask 'default', ['jshint', 'simplemocha', 'concat', 'uglify']
+  grunt.registerTask 'build', ['concat', 'uglify']
   grunt.registerTask 'test', ['jshint', 'simplemocha']
+  grunt.registerTask 'dev', ['connect', 'concat', 'watch']
+  grunt.registerTask 'demo', ['concat:demo', 'dev']

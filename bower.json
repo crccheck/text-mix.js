@@ -15,11 +15,5 @@
     "bower_components",
     "test",
     "tests"
-  ],
-  "dependencies": {
-    "levenshtein": "https://github.com/gf3/Levenshtein/tarball/master"
-  },
-  "devDependencies": {
-    "jquery": "~2.0.3"
-  }
+  ]
 }

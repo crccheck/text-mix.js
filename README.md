@@ -89,4 +89,4 @@ To install what's needed for development and to run the test suite:
 
 To install what's needed to run the demo locally, run:
 
-    bower install
+    grunt demo

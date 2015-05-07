@@ -4,12 +4,15 @@
   "description": "Smooth transitions for chunks of text.",
   "main": "text-mix.js",
   "dependencies": {
-    "levenshtein": "https://github.com/gf3/Levenshtein/tarball/master"
+    "levenshtein": "^1.0.5"
   },
   "devDependencies": {
-    "grunt-contrib-uglify": "~0.2.7",
     "grunt-contrib-concat": "~0.3.0",
+    "grunt-contrib-connect": "^0.10.1",
+    "grunt-contrib-copy": "^0.8.0",
     "grunt-contrib-jshint": "~0.7.2",
+    "grunt-contrib-uglify": "~0.2.7",
+    "grunt-contrib-watch": "^0.6.1",
     "grunt-simple-mocha": "~0.4.0"
   },
   "scripts": {
