@@ -2,34 +2,46 @@
 <html>
 <head>
   <meta charset=utf-8 />
-  <title>Text Crossfade Demo</title>
-  <style>
-    input {
-      vertical-align: top;
-      width: 20em;
-    }
-  </style>
+  <title>Text-mix Crossfade Demo</title>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.4/css/bootstrap.min.css">
 </head>
 <body>
-  <input type="text" id="thing1" placeholder="Put text in me." tabindex=1
-         value="elvis was here 300 seconds ago">
-  <input type="range" id="fader" min="0" max="1" step="0.05">
-  <input type="text" id="thing2" placeholder="Put text in me." tabindex=2
-         value="george washington slept 10 years">
-  <br>
-  <br>
-  <input type="text" id="output" readonly>
+  <div class="container-fluid">
+    <h2>Text-mix Demo</h2>
+    <div class="form-group row">
+      <div class="col-md-4">
+        <label for="thing1">Text</label>
+        <input class="form-control" type="text" id="thing1" placeholder="Put text in me." tabindex=1
+               value="elvis was here 300 seconds ago">
+      </div>
+      <div class="col-md-4">
+        <label for="fader">Transition Amount</label>
+        <input class="form-control" type="range" id="fader" min="0" max="1" step="0.05">
+      </div>
+      <div class="col-md-4">
+        <label for="thing2">Text</label>
+        <input class="form-control" type="text" id="thing2" placeholder="Put text in me." tabindex=2
+               value="george washington slept 10 years">
+      </div>
+    </div>
+    <div class="form-group row">
+      <div class="col-md-6 col-md-offset-3">
+        <label for="output">Result</label>
+        <input class="form-control" type="text" id="output" readonly>
+      </div>
+    </div>
 
-  <p>
-    This is a demo of way to smoothly transition one chunk of text to another.
-    For words, it uses the steps outlined by the Levenshtein distance, and for
-    digits (no thousands separator support yet), it does a linear ramp between
-    the two.
-  </p>
+    <p>
+      This is a demo of way to smoothly transition one chunk of text to another.
+      For words, it uses the steps outlined by the Levenshtein distance, and for
+      digits (no thousands separator support yet), it does a linear ramp between
+      the two.
+    </p>
 
-  <p>
-    Homepage: <a href="https://github.com/crccheck/text-mix.js/">github/crccheck/text-mix.js/</a>
-  </p>
+    <p>
+      Homepage: <a href="https://github.com/crccheck/text-mix.js/">github/crccheck/text-mix.js/</a>
+    </p>
+  </div>
 
   <!-- dependencies -->
   <script src="demo/levenshtein.js"></script>
