@@ -33,7 +33,23 @@ function _onInputChange () {
 }
 
 
+function loadInitialStateFromHash () {
+  var state = document.location.hash;
+  if (state[0] === '#') {
+    state = state.substr(1);
+  }
+  var bits = state.substr(1).split('/');
+  if (bits.length !== 2) {
+    // invalid state
+    return;
+  }
+  thing1.value = bits[0];
+  thing2.value = bits[1];
+}
+
+
 function main () {
+  loadInitialStateFromHash();
   fader.addEventListener('input', _faderCB, false);
   fader.addEventListener('change', _faderCB, false);
   thing1.addEventListener('change', _onInputChange, false);
