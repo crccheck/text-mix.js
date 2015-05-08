@@ -185,10 +185,32 @@
     return out.join(' ');
   };
 
+  // Stripped down version of `textMix` to use with `mix`.
+  // TODO Try to get more of this functionality into `mix` so it isn't recomputed.
+  var _textMix = function(words1, words2, n_max, amount) {
+    var out = [],
+        w1, w2;
+    for (var i = 0; i < n_max; i++) {
+      w1 = words1[i];
+      w2 = words2[i];
+      if (utils.isNumeric(w1) && utils.isNumeric(w2)) {
+        out.push(numberMix(parseFloat(w1), parseFloat(w2), amount));
+      } else if (!w1 || !w1.length || !w2 || !w2.length) {
+        out.push(stringMix(w1 || '', w2 || '', amount));
+      } else {
+        var d = (cachedLevenshtein(w1, w2)).distance;
+        out.push(traverse(w2, w1, Math.round(amount * d)));
+      }
+    }
+    return out.join(' ');
+  };
+
   function mix(text1, text2) {
-    // TODO move more functionality in here for performance
+    var words1 = get_words(text1),
+        words2 = get_words(text2);
+    var n_max = Math.max(words1.length, words2.length);
     return function (amount) {
-      return textMix(text1, text2, amount);
+      return _textMix(words1, words2, n_max, amount);
     };
   }
 
