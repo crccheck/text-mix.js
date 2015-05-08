@@ -190,14 +190,13 @@
     var out = [], tweenFunc, _amount;
     for (var i = 0; i < tweenFuncs.length; i++) {
       tweenFunc = tweenFuncs[i];
-      if (tweenFunc.func === traverse) {
+      if (tweenFunc.distance) {
         // need to convert amount to an iteration count
-        var d = tweenFunc.args[2];  // HACK
-        _amount = Math.round(amount * d);
+        _amount = Math.round(amount * tweenFunc.distance);
       } else {
         _amount = amount;
       }
-      out.push(tweenFunc.func(tweenFunc.args[0], tweenFunc.args[1], _amount));
+      out.push(tweenFunc.func(tweenFunc.a, tweenFunc.b, _amount));
     }
     return out.join(' ');
   };
@@ -213,12 +212,12 @@
       w1 = words1[i];
       w2 = words2[i];
       if (utils.isNumeric(w1) && utils.isNumeric(w2)) {
-        tweenFuncs.push({func: numberMix, args: [parseFloat(w1), parseFloat(w2)]});
+        tweenFuncs.push({func: numberMix, a: parseFloat(w1), b: parseFloat(w2)});
       } else if (!w1 || !w1.length || !w2 || !w2.length) {
-        tweenFuncs.push({func: stringMix, args: [w1 || '', w2 || '']});
+        tweenFuncs.push({func: stringMix, a: w1 || '', b: w2 || ''});
       } else {
         var d = (cachedLevenshtein(w1, w2)).distance;
-        tweenFuncs.push({func: traverse, args: [w2, w1, d]});
+        tweenFuncs.push({func: traverse, a: w2, b: w1, distance: d});
       }
     }
     return function (amount) {
