@@ -90,6 +90,13 @@ describe('mix', function () {
     var mix = textMix.mix('levenshtein distance', 'rocket science');
     assert.equal(mix(0), 'levenshtein distance');
     assert.equal(mix(1), 'rocket science');
+    assert.equal(mix(0.5), 'rshtein sctance');
+  });
+
+  it('rtl works', function () {
+    var mix = textMix.mix('levenshtein distance', 'rocket science', {rtl: true});
+    assert.equal(mix(0), 'levenshtein distance');
+    assert.equal(mix(1), 'rocket science');
     assert.equal(mix(0.5), 'levenocket dicience');
   });
 });

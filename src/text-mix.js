@@ -196,13 +196,16 @@
       } else {
         _amount = amount;
       }
+      if (!tweenFunc.rtl) {
+        _amount = tweenFunc.distance - _amount;
+      }
       out.push(tweenFunc.func(tweenFunc.a, tweenFunc.b, _amount));
     }
     return out.join(' ');
   };
 
   // A version of textMix optimized for use with the same words
-  function mix(text1, text2) {
+  function mix(text1, text2, options) {
     var words1 = get_words(text1),
         words2 = get_words(text2);
     var n_max = Math.max(words1.length, words2.length);
@@ -217,7 +220,11 @@
         tweenFuncs.push({func: stringMix, a: w1 || '', b: w2 || ''});
       } else {
         var d = (cachedLevenshtein(w1, w2)).distance;
-        tweenFuncs.push({func: traverse, a: w2, b: w1, distance: d});
+        if (options && options.rtl) {
+          tweenFuncs.push({func: traverse, a: w2, b: w1, distance: d, rtl: true});
+        } else {
+          tweenFuncs.push({func: traverse, a: w1, b: w2, distance: d});
+        }
       }
     }
     return function (amount) {
