@@ -185,32 +185,44 @@
     return out.join(' ');
   };
 
-  // Stripped down version of `textMix` to use with `mix`.
-  // TODO Try to get more of this functionality into `mix` so it isn't recomputed.
-  var _textMix = function(words1, words2, n_max, amount) {
-    var out = [],
-        w1, w2;
-    for (var i = 0; i < n_max; i++) {
-      w1 = words1[i];
-      w2 = words2[i];
-      if (utils.isNumeric(w1) && utils.isNumeric(w2)) {
-        out.push(numberMix(parseFloat(w1), parseFloat(w2), amount));
-      } else if (!w1 || !w1.length || !w2 || !w2.length) {
-        out.push(stringMix(w1 || '', w2 || '', amount));
+  // Variation of `textMix` to use with `mix`.
+  var _textMix = function(tweenFuncs, amount) {
+    var out = [], tweenFunc, _amount;
+    for (var i = 0; i < tweenFuncs.length; i++) {
+      tweenFunc = tweenFuncs[i];
+      if (tweenFunc.func === traverse) {
+        // need to convert amount to an iteration count
+        var d = tweenFunc.args[2];  // HACK
+        _amount = Math.round(amount * d);
       } else {
-        var d = (cachedLevenshtein(w1, w2)).distance;
-        out.push(traverse(w2, w1, Math.round(amount * d)));
+        _amount = amount;
       }
+      out.push(tweenFunc.func(tweenFunc.args[0], tweenFunc.args[1], _amount));
     }
     return out.join(' ');
   };
 
+  // A version of textMix optimized for use with the same words
   function mix(text1, text2) {
     var words1 = get_words(text1),
         words2 = get_words(text2);
     var n_max = Math.max(words1.length, words2.length);
+    var tweenFuncs = [];
+    var w1, w2;
+    for (var i = 0; i < n_max; i++) {
+      w1 = words1[i];
+      w2 = words2[i];
+      if (utils.isNumeric(w1) && utils.isNumeric(w2)) {
+        tweenFuncs.push({func: numberMix, args: [parseFloat(w1), parseFloat(w2)]});
+      } else if (!w1 || !w1.length || !w2 || !w2.length) {
+        tweenFuncs.push({func: stringMix, args: [w1 || '', w2 || '']});
+      } else {
+        var d = (cachedLevenshtein(w1, w2)).distance;
+        tweenFuncs.push({func: traverse, args: [w2, w1, d]});
+      }
+    }
     return function (amount) {
-      return _textMix(words1, words2, n_max, amount);
+      return _textMix(tweenFuncs, amount);
     };
   }
 
