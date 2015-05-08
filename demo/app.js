@@ -55,6 +55,14 @@ function loadInitialStateFromHash () {
 }
 
 
+function animateJqueryDemo () {
+  var text1 = $('#jquery1').text();
+  var text2 = $('#jquery2').text();
+  $('#jquery1').textMix(text2, 200);
+  $('#jquery2').textMix(text1, 200);
+}
+
+
 function main () {
   loadInitialStateFromHash();
   currentMix = textMix.mix(thing1.value, thing2.value);
@@ -64,6 +72,7 @@ function main () {
   thing2.addEventListener('change', _onInputChange, false);
   ramp();
   _onInputChange();
+  setInterval(animateJqueryDemo, 10000);
 }
 
 
