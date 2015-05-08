@@ -185,10 +185,19 @@
     return out.join(' ');
   };
 
+  function mix(text1, text2) {
+    // TODO move more functionality in here for performance
+    return function (amount) {
+      return textMix(text1, text2, amount);
+    };
+  }
+
+
   return {
     traverse: traverse,
     stringMix: stringMix,
     numberMix: numberMix,
-    textMix: textMix
+    textMix: textMix,
+    mix: mix
   };
 }));

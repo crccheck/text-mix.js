@@ -83,3 +83,13 @@ describe('traverse', function () {
     assert.equal(textMix.traverse('elvis', 'washington', 9), 'elvis');
   });
 });
+
+
+describe('mix', function () {
+  it('works', function () {
+    var mix = textMix.mix('levenshtein distance', 'rocket science');
+    assert.equal(mix(0), 'levenshtein distance');
+    assert.equal(mix(1), 'rocket science');
+    assert.equal(mix(0.5), 'levenocket dicience');
+  });
+});
