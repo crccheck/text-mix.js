@@ -15,12 +15,14 @@
 }(function ($, textMix) {
 
   $.fn.textMix = function (newText, duration, easing, complete) {
+    // Built on http://api.jquery.com/animate/
     var self = this,
         oldText = this.text(),
+        mix = textMix.mix(oldText, newText),
         options = {
           easing: 'linear',
-          step: function (now, tween) {
-            self.text(textMix.textMix(oldText, newText, now));
+          step: function (now) {
+            self.text(mix(now));
           }
         };
     if (duration) {
@@ -33,7 +35,7 @@
       options.complete = complete;
     }
 
-    $({foo: 0}).animate({foo: 1}, options);
+    return $({foo: 0}).animate({foo: 1}, options);
   };
 
 }));

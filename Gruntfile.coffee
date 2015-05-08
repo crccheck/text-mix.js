@@ -48,6 +48,6 @@ module.exports = (grunt) ->
 
   grunt.registerTask 'default', ['jshint', 'simplemocha', 'concat', 'uglify']
   grunt.registerTask 'build', ['concat', 'uglify']
-  grunt.registerTask 'test', ['jshint', 'simplemocha']
+  grunt.registerTask 'test', ['simplemocha']
   grunt.registerTask 'dev', ['connect', 'concat', 'watch']
   grunt.registerTask 'demo', ['concat:demo', 'dev']

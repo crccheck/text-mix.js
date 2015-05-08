@@ -5,6 +5,7 @@ var thing1 = document.getElementById('thing1'),
     output = document.getElementById('output'),
     step = +fader.step,
     timer, lastVal,
+    currentMix,
     ramp = function () {
       var val = +fader.value;
       var switchedDirection = false;
@@ -15,7 +16,8 @@ var thing1 = document.getElementById('thing1'),
         switchedDirection = true;
       }
       fader.value = val;
-      output.value = textMix.textMix(thing1.value, thing2.value, val);
+      // output.value = textMix.textMix(thing1.value, thing2.value, val);
+      output.value = currentMix(val);
       var timeout = switchedDirection ? 700 : Math.abs(2 / step);
       timer = setTimeout(ramp, timeout);
     },
@@ -24,7 +26,8 @@ var thing1 = document.getElementById('thing1'),
         clearTimeout(timer);
       }
       if (fader.value != lastVal) {
-        output.value = textMix.textMix(thing1.value, thing2.value, this.value);
+        // output.value = textMix.textMix(thing1.value, thing2.value, this.value);
+        output.value = currentMix(this.value);
         lastVal = fader.value;
       }
     };
@@ -32,6 +35,7 @@ var thing1 = document.getElementById('thing1'),
 
 // Store the input state in the location hash
 function _onInputChange () {
+  currentMix = textMix.mix(thing1.value, thing2.value);
   document.location.hash = '/' + encodeURIComponent(thing1.value) + '/' + encodeURIComponent(thing2.value);
 }
 
@@ -51,14 +55,24 @@ function loadInitialStateFromHash () {
 }
 
 
+function animateJqueryDemo () {
+  var text1 = $('#jquery1').text();
+  var text2 = $('#jquery2').text();
+  $('#jquery1').textMix(text2, 200);
+  $('#jquery2').textMix(text1, 200);
+}
+
+
 function main () {
   loadInitialStateFromHash();
+  currentMix = textMix.mix(thing1.value, thing2.value);
   fader.addEventListener('input', _faderCB, false);
   fader.addEventListener('change', _faderCB, false);
   thing1.addEventListener('change', _onInputChange, false);
   thing2.addEventListener('change', _onInputChange, false);
   ramp();
   _onInputChange();
+  setInterval(animateJqueryDemo, 10000);
 }
 
 
