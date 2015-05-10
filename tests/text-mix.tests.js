@@ -1,5 +1,6 @@
 var textMix = require('../src/text-mix'),
     assert = require('assert');
+var _ = require('lodash');
 
 
 describe('stringMix', function () {
@@ -15,6 +16,14 @@ describe('stringMix', function () {
     assert.equal(textMix.stringMix('wasd', 'qwerty', 0.5), 'qwedt');
     assert.equal(textMix.stringMix('wasd', 'qwerty', 0.8), 'qwert');
     assert.equal(textMix.stringMix('wasd', 'qwerty', 1), 'qwerty');
+  });
+
+  it('tweens rtl', function () {
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', 0), 'accoutrements');
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', -0.2), 'accoutremeian');
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', -0.5), 'accoutedalian');
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', -0.8), 'asquipedalian');
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', -1), 'sesquipedalian');
   });
 
   it('tweens null strings', function () {
@@ -60,11 +69,11 @@ describe('numberMix', function () {
 
 
 describe('traverse', function () {
-  it('identity test', function() {
+  it('identity test', function () {
     assert.equal(textMix.traverse('hello', 'hello', 0), 'hello');
   });
 
-  it('can traverse a path', function() {
+  it('can traverse a path', function () {
     assert.equal(textMix.traverse('kitten','sitting', 0), 'sitting');
     assert.equal(textMix.traverse('kitten','sitting', 1), 'sittin');
     // assert.equal(textMix.traverse('kitten','sitting', 2), 'sittin');
@@ -76,11 +85,43 @@ describe('traverse', function () {
     // assert.equal(textMix.traverse('kitten','sitting', 8), 'kitten');
   });
 
-  it('can traverse another path', function() {
+  it('can traverse another path', function () {
     assert.equal(textMix.traverse('elvis', 'washington', 0), 'washington');
     assert.equal(textMix.traverse('washington', 'elvis', 0), 'elvis');
     assert.equal(textMix.traverse('washington', 'elvis', 9), 'washington');
     assert.equal(textMix.traverse('elvis', 'washington', 9), 'elvis');
+  });
+});
+
+
+describe('textMix', function () {
+  it('traverses ltr by default', function () {
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 0),
+      'levenshtein distance'
+    );
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 1),
+      'rocket science'
+    );
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 0.5),
+      'rshtein sctance'
+    );
+  });
+  it('can traverse rtl', function () {
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 0, {rtl: true}),
+      'levenshtein distance'
+    );
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 1, {rtl: true}),
+      'rocket science'
+    );
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 0.5, {rtl: true}),
+      'levenocket dicience'
+    );
   });
 });
 
@@ -90,6 +131,33 @@ describe('mix', function () {
     var mix = textMix.mix('levenshtein distance', 'rocket science');
     assert.equal(mix(0), 'levenshtein distance');
     assert.equal(mix(1), 'rocket science');
+    assert.equal(mix(0.5), 'rshtein sctance');
+  });
+
+  it('works with mismatched sentences', function () {
+    var mix = textMix.mix('abcdefg 10000', 'never the same color');
+    assert.equal(mix(0), 'abcdefg 10000  ');
+    assert.equal(mix(1), 'never the same color');
+    assert.equal(mix(0.5), 'nedefg t00 sa co');
+  });
+
+  it('rtl works', function () {
+    var mix = textMix.mix('levenshtein distance', 'rocket science', {rtl: true});
+    assert.equal(mix(0), 'levenshtein distance');
+    assert.equal(mix(1), 'rocket science');
     assert.equal(mix(0.5), 'levenocket dicience');
+  });
+});
+
+
+describe('feature parity between textMix and mix', function () {
+  it('behaves the same', function () {
+    var alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789   ';
+    var sentence1 = _.shuffle(alphabet).join('');
+    var sentence2 = _.shuffle(alphabet).join('');
+    var amount = Math.random();
+    var textMixOut = textMix.textMix(sentence1, sentence2, amount);
+    var mixOut = textMix.mix(sentence1, sentence2)(amount);
+    assert.equal(textMixOut, mixOut);
   });
 });

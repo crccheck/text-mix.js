@@ -30,7 +30,7 @@ module.exports = (grunt) ->
         src: ['tests/*.tests.js']
     watch:
       demo:
-        files: ['index.html', 'demo/**/*']
+        files: ['index.html', 'demo/**/*', 'src/**/*.js']
         options:
           livereload: true
     connect:

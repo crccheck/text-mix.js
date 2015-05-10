@@ -86,7 +86,7 @@
   };
 
   // Traverse a path through the Levenshtein matrix
-  var traverse = function(text1, text2, iterations) {
+  function traverse (text1, text2, iterations) {
     var lev = cachedLevenshtein(text1, text2);
     if (lev.distance === 0) {
       // text1 == text2
@@ -124,10 +124,11 @@
       debug('..ret:', ret.join(''));
     }
     return ret.join('');
-  };
+  }
 
   // helper for `stringMix`
-  var pick = function(text1, text2, idx, amount) {
+  // @returns {char} The character between text1 and text2 at index idx
+  var _pick = function(text1, text2, idx, amount) {
     // assert idx < Math.max(text1.length, text2.length)
     var n_max = Math.max(text1.length, text2.length);
     if (idx >= text1.length) {
@@ -141,21 +142,38 @@
     // return (Math.random() < amount) ? text2[idx]: text1[idx];
   };
 
-  // Basic tween between two strings starting from the left
-  var stringMix = function(text1, text2, amount) {
-    var new_length = text1.length + Math.floor((text2.length - text1.length) * amount),
-        out = '';
-    for (var i = 0; i < new_length; i++) {
-      out += pick(text1, text2, i, amount);
+  function reverse (s) {
+    return s.split('').reverse().join('');
+  }
+
+  // Simple tween between two strings
+  // @param {String} text1 - The starting text
+  // @param {String} text2 - The ending text
+  // @param {Number} amount - The amount to tween, between 0.0 and 1.0 for LTR
+  //                          and 0.0 to -1.0 for RTL
+  function stringMix (text1, text2, amount) {
+    var newLength = text1.length + Math.floor((text2.length - text1.length) * Math.abs(amount)),
+        out = '', i;
+    if (amount < 0) {
+      var rt1 = reverse(text1);
+      var rt2 = reverse(text2);
+      for (i = 0; i < newLength; i++) {
+        out += _pick(rt1, rt2, i, -amount);
+      }
+      return reverse(out);
+    } else {
+      for (i = 0; i < newLength; i++) {
+        out += _pick(text1, text2, i, amount);
+      }
+      return out;
     }
-    return out;
-  };
+  }
 
   // Tween between two numbers
-  var numberMix = function(num1, num2, amount) {
+  function numberMix (num1, num2, amount) {
     // FIXME sig digs
     return Math.round(num1 + (num2 - num1) * amount);
-  };
+  }
 
   // Splits a sentence into words
   // Demo: http://youtu.be/M7FIvfx5J10
@@ -164,7 +182,13 @@
     // return [text];
   };
 
-  var textMix = function(text1, text2, amount) {
+  // Tween text between two values
+  // @param {String} text1 - The starting text
+  // @param {String} text2 - The ending text
+  // @param {Number} amount - The amount to tween, between 0.0 and 1.0
+  // @param {Object} [options] - Any additional options
+  // @param {bool} [options.rtl] - Text is right-to-left
+  var textMix = function(text1, text2, amount, options) {
     var words1 = get_words(text1),
         words2 = get_words(text2),
         n_max = Math.max(words1.length, words2.length),
@@ -176,10 +200,14 @@
       if (utils.isNumeric(w1) && utils.isNumeric(w2)) {
         out.push(numberMix(parseFloat(w1), parseFloat(w2), amount));
       } else if (!w1 || !w1.length || !w2 || !w2.length) {
-        out.push(stringMix(w1 || '', w2 || '', amount));
+        out.push(stringMix(w1 || '', w2 || '', options && options.rtl ? -amount : amount));
       } else {
         var d = (cachedLevenshtein(w1, w2)).distance;
-        out.push(traverse(w2, w1, Math.round(amount * d)));
+        if (options && options.rtl) {
+          out.push(traverse(w2, w1, Math.round(amount * d)));
+        } else {
+          out.push(traverse(w1, w2, d - Math.round(amount * d)));
+        }
       }
     }
     return out.join(' ');
@@ -193,6 +221,9 @@
       if (tweenFunc.distance) {
         // need to convert amount to an iteration count
         _amount = Math.round(amount * tweenFunc.distance);
+        if (!tweenFunc.rtl) {
+          _amount = tweenFunc.distance - _amount;
+        }
       } else {
         _amount = amount;
       }
@@ -202,7 +233,12 @@
   };
 
   // A version of textMix optimized for use with the same words
-  function mix(text1, text2) {
+  // @param {String} text1 - The starting text
+  // @param {String} text2 - The ending text
+  // @param {Object} [options] - Any additional options
+  // @param {bool} [options.rtl] - Text is right-to-left
+  // @returns {Function}
+  function mix(text1, text2, options) {
     var words1 = get_words(text1),
         words2 = get_words(text2);
     var n_max = Math.max(words1.length, words2.length);
@@ -217,7 +253,11 @@
         tweenFuncs.push({func: stringMix, a: w1 || '', b: w2 || ''});
       } else {
         var d = (cachedLevenshtein(w1, w2)).distance;
-        tweenFuncs.push({func: traverse, a: w2, b: w1, distance: d});
+        if (options && options.rtl) {
+          tweenFuncs.push({func: traverse, a: w2, b: w1, distance: d, rtl: true});
+        } else {
+          tweenFuncs.push({func: traverse, a: w1, b: w2, distance: d});
+        }
       }
     }
     return function (amount) {
