@@ -164,6 +164,12 @@
     // return [text];
   };
 
+  // Tween text between two values
+  // @param {String} text1 - The starting text
+  // @param {String} text2 - The ending text
+  // @param {Number} amount - The amount to tween, between 0.0 and 1.0
+  // @param {Object} [options] - Any additional options
+  // @param {bool} [options.rtl] - Text is right-to-left
   var textMix = function(text1, text2, amount, options) {
     var words1 = get_words(text1),
         words2 = get_words(text2),
@@ -209,6 +215,11 @@
   };
 
   // A version of textMix optimized for use with the same words
+  // @param {String} text1 - The starting text
+  // @param {String} text2 - The ending text
+  // @param {Object} [options] - Any additional options
+  // @param {bool} [options.rtl] - Text is right-to-left
+  // @returns {Function}
   function mix(text1, text2, options) {
     var words1 = get_words(text1),
         words2 = get_words(text2);
