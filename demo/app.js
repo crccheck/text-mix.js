@@ -72,7 +72,7 @@ function main () {
   thing2.addEventListener('change', _onInputChange, false);
   ramp();
   _onInputChange();
-  setInterval(animateJqueryDemo, 10000);
+  // setInterval(animateJqueryDemo, 10000);
 }
 
 

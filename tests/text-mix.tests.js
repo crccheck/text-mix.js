@@ -126,6 +126,13 @@ describe('mix', function () {
     assert.equal(mix(0.5), 'rshtein sctance');
   });
 
+  it('works with mismatched sentences', function () {
+    var mix = textMix.mix('abcdefg 10000', 'never the same color');
+    assert.equal(mix(0), 'abcdefg 10000  ');
+    assert.equal(mix(1), 'never the same color');
+    assert.equal(mix(0.5), 'nedefg t00 sa co');
+  });
+
   it('rtl works', function () {
     var mix = textMix.mix('levenshtein distance', 'rocket science', {rtl: true});
     assert.equal(mix(0), 'levenshtein distance');

@@ -86,7 +86,7 @@
   };
 
   // Traverse a path through the Levenshtein matrix
-  var traverse = function(text1, text2, iterations) {
+  function traverse (text1, text2, iterations) {
     var lev = cachedLevenshtein(text1, text2);
     if (lev.distance === 0) {
       // text1 == text2
@@ -124,7 +124,7 @@
       debug('..ret:', ret.join(''));
     }
     return ret.join('');
-  };
+  }
 
   // helper for `stringMix`
   var pick = function(text1, text2, idx, amount) {
@@ -142,20 +142,20 @@
   };
 
   // Basic tween between two strings starting from the left
-  var stringMix = function(text1, text2, amount) {
+  function stringMix (text1, text2, amount) {
     var new_length = text1.length + Math.floor((text2.length - text1.length) * amount),
         out = '';
     for (var i = 0; i < new_length; i++) {
       out += pick(text1, text2, i, amount);
     }
     return out;
-  };
+  }
 
   // Tween between two numbers
-  var numberMix = function(num1, num2, amount) {
+  function numberMix (num1, num2, amount) {
     // FIXME sig digs
     return Math.round(num1 + (num2 - num1) * amount);
-  };
+  }
 
   // Splits a sentence into words
   // Demo: http://youtu.be/M7FIvfx5J10
@@ -197,11 +197,11 @@
       if (tweenFunc.distance) {
         // need to convert amount to an iteration count
         _amount = Math.round(amount * tweenFunc.distance);
+        if (!tweenFunc.rtl) {
+          _amount = tweenFunc.distance - _amount;
+        }
       } else {
         _amount = amount;
-      }
-      if (!tweenFunc.rtl) {
-        _amount = tweenFunc.distance - _amount;
       }
       out.push(tweenFunc.func(tweenFunc.a, tweenFunc.b, _amount));
     }
