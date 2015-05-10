@@ -1,4 +1,4 @@
-/* text-mix - v0.2.0 - 2013-12-01 */
+/* text-mix - v0.3.0 - 2015-05-10 */
 // Uses Node, AMD or browser globals to create a module.
 //
 // https://github.com/umdjs/umd/blob/master/returnExports.js
@@ -87,7 +87,7 @@
   };
 
   // Traverse a path through the Levenshtein matrix
-  var traverse = function(text1, text2, iterations) {
+  function traverse (text1, text2, iterations) {
     var lev = cachedLevenshtein(text1, text2);
     if (lev.distance === 0) {
       // text1 == text2
@@ -125,10 +125,11 @@
       debug('..ret:', ret.join(''));
     }
     return ret.join('');
-  };
+  }
 
   // helper for `stringMix`
-  var pick = function(text1, text2, idx, amount) {
+  // @returns {char} The character between text1 and text2 at index idx
+  var _pick = function(text1, text2, idx, amount) {
     // assert idx < Math.max(text1.length, text2.length)
     var n_max = Math.max(text1.length, text2.length);
     if (idx >= text1.length) {
@@ -142,25 +143,55 @@
     // return (Math.random() < amount) ? text2[idx]: text1[idx];
   };
 
-  // Basic tween between two strings starting from the left
-  var stringMix = function(text1, text2, amount) {
-    var new_length = text1.length + Math.floor((text2.length - text1.length) * amount),
-        out = '';
-    for (var i = 0; i < new_length; i++) {
-      out += pick(text1, text2, i, amount);
+  function reverse (s) {
+    return s.split('').reverse().join('');
+  }
+
+  // Simple tween between two strings
+  // @param {String} text1 - The starting text
+  // @param {String} text2 - The ending text
+  // @param {Number} amount - The amount to tween, between 0.0 and 1.0 for LTR
+  //                          and 0.0 to -1.0 for RTL
+  function stringMix (text1, text2, amount) {
+    var newLength = text1.length + Math.floor((text2.length - text1.length) * Math.abs(amount)),
+        out = '', i;
+    if (amount < 0) {
+      var rt1 = reverse(text1);
+      var rt2 = reverse(text2);
+      for (i = 0; i < newLength; i++) {
+        out += _pick(rt1, rt2, i, -amount);
+      }
+      return reverse(out);
+    } else {
+      for (i = 0; i < newLength; i++) {
+        out += _pick(text1, text2, i, amount);
+      }
+      return out;
     }
-    return out;
-  };
+  }
 
   // Tween between two numbers
-  var numberMix = function(num1, num2, amount) {
+  function numberMix (num1, num2, amount) {
     // FIXME sig digs
     return Math.round(num1 + (num2 - num1) * amount);
+  }
+
+  // Splits a sentence into words
+  // Demo: http://youtu.be/M7FIvfx5J10
+  var get_words = function(text) {
+    return text.split(' ');
+    // return [text];
   };
 
-  var textMix = function(text1, text2, amount) {
-    var words1 = text1.split(' '),
-        words2 = text2.split(' '),
+  // Tween text between two values
+  // @param {String} text1 - The starting text
+  // @param {String} text2 - The ending text
+  // @param {Number} amount - The amount to tween, between 0.0 and 1.0
+  // @param {Object} [options] - Any additional options
+  // @param {bool} [options.rtl] - Text is right-to-left
+  var textMix = function(text1, text2, amount, options) {
+    var words1 = get_words(text1),
+        words2 = get_words(text2),
         n_max = Math.max(words1.length, words2.length),
         out = [],
         w1, w2;
@@ -170,20 +201,78 @@
       if (utils.isNumeric(w1) && utils.isNumeric(w2)) {
         out.push(numberMix(parseFloat(w1), parseFloat(w2), amount));
       } else if (!w1 || !w1.length || !w2 || !w2.length) {
-        out.push(stringMix(w1 || '', w2 || '', amount));
+        out.push(stringMix(w1 || '', w2 || '', options && options.rtl ? -amount : amount));
       } else {
         var d = (cachedLevenshtein(w1, w2)).distance;
-        out.push(traverse(w2, w1, Math.round(amount * d)));
+        if (options && options.rtl) {
+          out.push(traverse(w2, w1, Math.round(amount * d)));
+        } else {
+          out.push(traverse(w1, w2, d - Math.round(amount * d)));
+        }
       }
     }
     return out.join(' ');
   };
 
+  // Variation of `textMix` to use with `mix`.
+  var _textMix = function(tweenFuncs, amount) {
+    var out = [], tweenFunc, _amount;
+    for (var i = 0; i < tweenFuncs.length; i++) {
+      tweenFunc = tweenFuncs[i];
+      if (tweenFunc.distance) {
+        // need to convert amount to an iteration count
+        _amount = Math.round(amount * tweenFunc.distance);
+        if (!tweenFunc.rtl) {
+          _amount = tweenFunc.distance - _amount;
+        }
+      } else {
+        _amount = amount;
+      }
+      out.push(tweenFunc.func(tweenFunc.a, tweenFunc.b, _amount));
+    }
+    return out.join(' ');
+  };
+
+  // A version of textMix optimized for use with the same words
+  // @param {String} text1 - The starting text
+  // @param {String} text2 - The ending text
+  // @param {Object} [options] - Any additional options
+  // @param {bool} [options.rtl] - Text is right-to-left
+  // @returns {Function}
+  function mix(text1, text2, options) {
+    var words1 = get_words(text1),
+        words2 = get_words(text2);
+    var n_max = Math.max(words1.length, words2.length);
+    var tweenFuncs = [];
+    var w1, w2;
+    for (var i = 0; i < n_max; i++) {
+      w1 = words1[i];
+      w2 = words2[i];
+      if (utils.isNumeric(w1) && utils.isNumeric(w2)) {
+        tweenFuncs.push({func: numberMix, a: parseFloat(w1), b: parseFloat(w2)});
+      } else if (!w1 || !w1.length || !w2 || !w2.length) {
+        tweenFuncs.push({func: stringMix, a: w1 || '', b: w2 || ''});
+      } else {
+        var d = (cachedLevenshtein(w1, w2)).distance;
+        if (options && options.rtl) {
+          tweenFuncs.push({func: traverse, a: w2, b: w1, distance: d, rtl: true});
+        } else {
+          tweenFuncs.push({func: traverse, a: w1, b: w2, distance: d});
+        }
+      }
+    }
+    return function (amount) {
+      return _textMix(tweenFuncs, amount);
+    };
+  }
+
+
   return {
     traverse: traverse,
     stringMix: stringMix,
     numberMix: numberMix,
-    textMix: textMix
+    textMix: textMix,
+    mix: mix
   };
 }));
 
@@ -204,12 +293,14 @@
 }(function ($, textMix) {
 
   $.fn.textMix = function (newText, duration, easing, complete) {
+    // Built on http://api.jquery.com/animate/
     var self = this,
         oldText = this.text(),
+        mix = textMix.mix(oldText, newText),
         options = {
           easing: 'linear',
-          step: function (now, tween) {
-            self.text(textMix.textMix(oldText, newText, now));
+          step: function (now) {
+            self.text(mix(now));
           }
         };
     if (duration) {
@@ -222,7 +313,7 @@
       options.complete = complete;
     }
 
-    $({foo: 0}).animate({foo: 1}, options);
+    return $({foo: 0}).animate({foo: 1}, options);
   };
 
 }));

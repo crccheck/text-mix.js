@@ -3,7 +3,7 @@
   "main": [
     "dist/*"
   ],
-  "version": "0.2.0",
+  "version": "0.3.0",
   "homepage": "https://github.com/crccheck/text-mix.js",
   "authors": [
     "crccheck <c@crccheck.com>"
