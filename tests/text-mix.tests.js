@@ -60,11 +60,11 @@ describe('numberMix', function () {
 
 
 describe('traverse', function () {
-  it('identity test', function() {
+  it('identity test', function () {
     assert.equal(textMix.traverse('hello', 'hello', 0), 'hello');
   });
 
-  it('can traverse a path', function() {
+  it('can traverse a path', function () {
     assert.equal(textMix.traverse('kitten','sitting', 0), 'sitting');
     assert.equal(textMix.traverse('kitten','sitting', 1), 'sittin');
     // assert.equal(textMix.traverse('kitten','sitting', 2), 'sittin');
@@ -76,11 +76,43 @@ describe('traverse', function () {
     // assert.equal(textMix.traverse('kitten','sitting', 8), 'kitten');
   });
 
-  it('can traverse another path', function() {
+  it('can traverse another path', function () {
     assert.equal(textMix.traverse('elvis', 'washington', 0), 'washington');
     assert.equal(textMix.traverse('washington', 'elvis', 0), 'elvis');
     assert.equal(textMix.traverse('washington', 'elvis', 9), 'washington');
     assert.equal(textMix.traverse('elvis', 'washington', 9), 'elvis');
+  });
+});
+
+
+describe('textMix', function () {
+  it('traverses ltr by default', function () {
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 0),
+      'levenshtein distance'
+    );
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 1),
+      'rocket science'
+    );
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 0.5),
+      'rshtein sctance'
+    );
+  });
+  it('can traverse rtl', function () {
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 0, {rtl: true}),
+      'levenshtein distance'
+    );
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 1, {rtl: true}),
+      'rocket science'
+    );
+    assert.equal(
+      textMix.textMix('levenshtein distance', 'rocket science', 0.5, {rtl: true}),
+      'levenocket dicience'
+    );
   });
 });
 

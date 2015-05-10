@@ -164,7 +164,7 @@
     // return [text];
   };
 
-  var textMix = function(text1, text2, amount) {
+  var textMix = function(text1, text2, amount, options) {
     var words1 = get_words(text1),
         words2 = get_words(text2),
         n_max = Math.max(words1.length, words2.length),
@@ -179,7 +179,11 @@
         out.push(stringMix(w1 || '', w2 || '', amount));
       } else {
         var d = (cachedLevenshtein(w1, w2)).distance;
-        out.push(traverse(w2, w1, Math.round(amount * d)));
+        if (options && options.rtl) {
+          out.push(traverse(w2, w1, Math.round(amount * d)));
+        } else {
+          out.push(traverse(w1, w2, d - Math.round(amount * d)));
+        }
       }
     }
     return out.join(' ');
