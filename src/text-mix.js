@@ -127,7 +127,8 @@
   }
 
   // helper for `stringMix`
-  var pick = function(text1, text2, idx, amount) {
+  // @returns {char} The character between text1 and text2 at index idx
+  var _pick = function(text1, text2, idx, amount) {
     // assert idx < Math.max(text1.length, text2.length)
     var n_max = Math.max(text1.length, text2.length);
     if (idx >= text1.length) {
@@ -141,14 +142,31 @@
     // return (Math.random() < amount) ? text2[idx]: text1[idx];
   };
 
-  // Basic tween between two strings starting from the left
+  function reverse (s) {
+    return s.split('').reverse().join('');
+  }
+
+  // Simple tween between two strings
+  // @param {String} text1 - The starting text
+  // @param {String} text2 - The ending text
+  // @param {Number} amount - The amount to tween, between 0.0 and 1.0 for LTR
+  //                          and 0.0 to -1.0 for RTL
   function stringMix (text1, text2, amount) {
-    var new_length = text1.length + Math.floor((text2.length - text1.length) * amount),
-        out = '';
-    for (var i = 0; i < new_length; i++) {
-      out += pick(text1, text2, i, amount);
+    var newLength = text1.length + Math.floor((text2.length - text1.length) * Math.abs(amount)),
+        out = '', i;
+    if (amount < 0) {
+      var rt1 = reverse(text1);
+      var rt2 = reverse(text2);
+      for (i = 0; i < newLength; i++) {
+        out += _pick(rt1, rt2, i, -amount);
+      }
+      return reverse(out);
+    } else {
+      for (i = 0; i < newLength; i++) {
+        out += _pick(text1, text2, i, amount);
+      }
+      return out;
     }
-    return out;
   }
 
   // Tween between two numbers
@@ -182,7 +200,7 @@
       if (utils.isNumeric(w1) && utils.isNumeric(w2)) {
         out.push(numberMix(parseFloat(w1), parseFloat(w2), amount));
       } else if (!w1 || !w1.length || !w2 || !w2.length) {
-        out.push(stringMix(w1 || '', w2 || '', amount));
+        out.push(stringMix(w1 || '', w2 || '', options && options.rtl ? -amount : amount));
       } else {
         var d = (cachedLevenshtein(w1, w2)).distance;
         if (options && options.rtl) {

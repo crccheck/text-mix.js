@@ -18,6 +18,14 @@ describe('stringMix', function () {
     assert.equal(textMix.stringMix('wasd', 'qwerty', 1), 'qwerty');
   });
 
+  it('tweens rtl', function () {
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', 0), 'accoutrements');
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', -0.2), 'accoutremeian');
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', -0.5), 'accoutedalian');
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', -0.8), 'asquipedalian');
+    assert.equal(textMix.stringMix('accoutrements', 'sesquipedalian', -1), 'sesquipedalian');
+  });
+
   it('tweens null strings', function () {
     assert.equal(textMix.stringMix('0123456789', '', 0.0), '0123456789');
     assert.equal(textMix.stringMix('0123456789', '', 0.1), '012345678');
