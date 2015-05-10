@@ -1,5 +1,6 @@
 var textMix = require('../src/text-mix'),
     assert = require('assert');
+var _ = require('lodash');
 
 
 describe('stringMix', function () {
@@ -130,5 +131,18 @@ describe('mix', function () {
     assert.equal(mix(0), 'levenshtein distance');
     assert.equal(mix(1), 'rocket science');
     assert.equal(mix(0.5), 'levenocket dicience');
+  });
+});
+
+
+describe('feature parity between textMix and mix', function () {
+  it('behaves the same', function () {
+    var alphabet = 'abcdefghijklmnopqrstuvwxyz0123456789   ';
+    var sentence1 = _.shuffle(alphabet).join('');
+    var sentence2 = _.shuffle(alphabet).join('');
+    var amount = Math.random();
+    var textMixOut = textMix.textMix(sentence1, sentence2, amount);
+    var mixOut = textMix.mix(sentence1, sentence2)(amount);
+    assert.equal(textMixOut, mixOut);
   });
 });
